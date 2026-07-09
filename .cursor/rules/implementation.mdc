@@ -1,0 +1,22 @@
+---
+description: Implementation conventions
+globs: src/**,lib/**,app/**,tests/**,**/*.{ts,tsx,js,jsx,py,go,rs}
+alwaysApply: false
+---
+
+# Implementation rules
+
+- Match existing codebase conventions — read similar files first
+- Minimal diff: fix intent = root cause only, no drive-by refactors
+- improve intent = no behavior change; tests are frozen spec
+- Atomic commits per task with clear messages
+- Add/update tests for behavior changes
+- Do not edit `specs/` directly during execute — use change deltas, merge on archive
+
+## Executor context budget
+
+On `/execute`, load ONLY:
+- One unchecked task from `tasks.md`
+- `design.md` for active change
+- `constitution.md`
+- Relevant `@files` — not full plan-team chat history

@@ -1,0 +1,29 @@
+name: 💡 Feature request
+description: Suggest an improvement to Agent Dev OS
+labels: enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What pain does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - Skill / subagent
+        - Scripts
+        - CI
+        - Docs
+        - Other
+    validations:
+      required: true

@@ -1,0 +1,20 @@
+---
+description: Planning and change artifacts
+globs: .planning/**,changes/**
+alwaysApply: false
+---
+
+# Planning rules
+
+- **Change** = one logical unit in `changes/<slug>/`
+- Artifacts: `proposal.md`, `design.md`, `tasks.md`, `specs/` (deltas), `roles/`
+- Spec deltas use ADDED / MODIFIED / REMOVED sections (OpenSpec style)
+- Role agents write to `roles/*.md` — never write application code
+- Human gates: after PM questions, after architect option pick, before execute
+- Update `.planning/STATE.md` decisions when scope or architecture is locked
+
+## tasks.md
+
+- One checkbox = one `/execute` session
+- Include EARS acceptance criteria from QA role
+- Mark `[x]` only when task is fully done and committed

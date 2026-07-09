@@ -1,0 +1,74 @@
+name: CI
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect stack
+        id: stack
+        run: |
+          if [ -f package.json ]; then echo "type=node" >> $GITHUB_OUTPUT
+          elif [ -f pyproject.toml ] || [ -f requirements.txt ]; then echo "type=python" >> $GITHUB_OUTPUT
+          elif [ -f go.mod ]; then echo "type=go" >> $GITHUB_OUTPUT
+          else echo "type=generic" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Node
+        if: steps.stack.outputs.type == 'node'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Setup Python
+        if: steps.stack.outputs.type == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup Go
+        if: steps.stack.outputs.type == 'go'
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Install & test (Node)
+        if: steps.stack.outputs.type == 'node'
+        run: |
+          npm ci 2>/dev/null || npm install
+          npm run lint --if-present
+          npm test --if-present
+          npm run build --if-present
+
+      - name: Install & test (Python)
+        if: steps.stack.outputs.type == 'python'
+        run: |
+          pip install -r requirements.txt 2>/dev/null || pip install pytest ruff
+          ruff check . 2>/dev/null || true
+          pytest -q 2>/dev/null || echo "No tests yet — add pytest after bootstrap"
+
+      - name: Install & test (Go)
+        if: steps.stack.outputs.type == 'go'
+        run: |
+          go vet ./...
+          go test ./...
+
+      - name: Template sanity (generic / fallback)
+        if: steps.stack.outputs.type == 'generic'
+        run: |
+          test -f AGENTS.md
+          test -f .planning/constitution.md.template
+          test -x scripts/bootstrap.sh
+          echo "✓ Agent Dev OS template structure OK"

@@ -1,0 +1,35 @@
+---
+description: Core Agent Dev OS rules — always apply
+globs:
+alwaysApply: true
+---
+
+# Agent Dev OS — Core
+
+You operate inside **Agent Dev OS**: Planner → Executor → Evaluator loop with **Change** as the work unit.
+
+## Always read first
+
+- `AGENTS.md` — commands, DoD, boundaries
+- `.planning/STATE.md` — active change, product stage
+- `.planning/constitution.md` — immutable principles
+
+## Loop phases
+
+| Phase | Mode | Who writes code |
+|-------|------|-----------------|
+| EXPLORE | Ask / Debug | Nobody |
+| PLAN | Plan / Ask | Nobody |
+| EXECUTE | Agent | Executor only (fresh session per task) |
+| VERIFY | Ask (new chat) | Nobody (checker) |
+| SHIP / ARCHIVE | Agent / human | Nobody |
+
+## Safety (careful / freeze / guard)
+
+- **careful**: ask before destructive ops, schema changes, dependency major bumps
+- **freeze**: do not edit files outside active change scope without human OK
+- **guard**: never merge PR, never change constitution, never skip reproduction on fix
+
+## Definition of Done
+
+Local tests pass → lint pass → checker `/verify` → CI green → human merge → `/archive`

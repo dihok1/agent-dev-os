@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      { "command": "./scripts/hooks/load-state.sh" }
+    ],
+    "afterFileEdit": [
+      { "command": "./scripts/hooks/format.sh" }
+    ],
+    "beforeShellExecution": [
+      { "command": "./scripts/hooks/block-dangerous.sh" }
+    ],
+    "stop": [
+      { "command": "./scripts/hooks/run-tests.sh" }
+    ]
+  }
+}

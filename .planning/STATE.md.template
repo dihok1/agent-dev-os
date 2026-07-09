@@ -1,0 +1,22 @@
+# State
+
+product_stage: {{PRODUCT_STAGE}}
+active_change: none
+last_verified: none
+
+roundtable_depth: standard
+has_ui: false
+has_devex: false
+security_gate: false
+
+## Decisions
+
+<!-- Format: YYYY-MM-DD: decision (rationale) -->
+
+## Blockers
+
+- none
+
+## WIP checkpoint
+
+<!-- Optional: context-save between sessions -->

@@ -1,0 +1,40 @@
+name: PR Check
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pr-metadata:
+    name: PR metadata
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check PR links active change
+        run: |
+          BODY="${{ github.event.pull_request.body }}"
+          if echo "$BODY" | grep -qiE 'changes/|## Change'; then
+            echo "✓ PR references a Change"
+          else
+            echo "::warning::PR body should reference active Change (changes/<slug>)"
+          fi
+
+  # Optional: Cursor CLI agent review (uncomment when CURSOR_API_KEY is configured)
+  # cursor-review:
+  #   name: Cursor agent review
+  #   runs-on: ubuntu-latest
+  #   if: github.event.pull_request.draft == false
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Cursor review
+  #       env:
+  #         CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+  #       run: |
+  #         # See https://cursor.com/docs/cli/github-actions
+  #         echo "Configure Cursor CLI review per docs"

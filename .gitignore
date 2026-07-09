@@ -1,0 +1,42 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+*.pem
+credentials.json
+
+# Dependencies (project-specific — customize after bootstrap)
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+dist/
+build/
+target/
+
+# Logs & temp
+*.log
+tmp/
+.temp/
+
+# Planning runtime (generated from templates on bootstrap)
+.planning/STATE.md
+.planning/PROJECT.md
+.planning/ROADMAP.md
+.planning/constitution.md
+
+# Active changes (keep template + archive)
+changes/*
+!changes/_template/
+!changes/archive/
+!changes/.gitkeep
