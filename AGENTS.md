@@ -2,6 +2,8 @@
 
 Agent Dev OS runtime guide for Cursor agents. Details live in `.cursor/skills/`.
 
+**Methodology:** synthesis of GSD, OpenSpec, Spec Kit, BMAD, gstack, and Planner–Executor–Evaluator — see [docs/SYNTHESIS.md](docs/SYNTHESIS.md).
+
 ## Quick commands
 
 | Shell | Cursor skill |

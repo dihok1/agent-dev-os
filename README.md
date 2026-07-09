@@ -4,13 +4,15 @@
 
 ### The operating system for AI-assisted software development in Cursor
 
-**Planner → Executor → Evaluator** loop · **Change**-based work units · **Role Roundtable** for planning · **CI as evaluator**
+**A synthesis of modern AI-dev methodologies** — GSD, OpenSpec, Spec Kit, BMAD, gstack, and Planner–Executor–Evaluator — **native in Cursor**, no extra CLI.
+
+**Planner → Executor → Evaluator** loop · **Change**-based work units · **Role Roundtable** · **CI as evaluator**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Cursor](https://img.shields.io/badge/Cursor-native-000000?logo=cursor&logoColor=white)](https://cursor.com)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-[Quick Start](#-quick-start) · [How It Works](#-how-it-works) · [Commands](#-command-cheatsheet) · [Compare](#-why-not-another-framework) · [Contributing](CONTRIBUTING.md)
+[Quick Start](#-quick-start) · [The Synthesis](#-the-synthesis--all-modern-approaches-unified) · [How It Works](#-how-it-works) · [Commands](#-command-cheatsheet) · [Compare](#-why-not-another-framework) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -26,6 +28,56 @@ Most AI coding failures happen **between steps** — not because the model is we
 - Frameworks like BMAD/GSD/OpenSpec are powerful but heavy, coupled, or rigid
 
 **Agent Dev OS** is a **copy-paste template** that gives you production-grade orchestration **natively in Cursor** — Skills, Subagents, Hooks, and GitHub Actions — without installing another CLI.
+
+---
+
+## 🧬 The synthesis — all modern approaches, unified
+
+No framework does everything. Production practice in 2025–2026 converged on **combining patterns** — Agent Dev OS packages that combination into one template.
+
+```mermaid
+flowchart LR
+  GSD["GSD\nfresh executor · loop"]
+  OS["OpenSpec\nChanges · deltas"]
+  SK["Spec Kit\nconstitution · gates"]
+  BMAD["BMAD\nrole planning"]
+  GS["gstack\nsprint · iron laws"]
+  PEE["P-E-E\nplan · build · verify"]
+  CUR["Cursor\nskills · hooks"]
+
+  GSD --> ADOS[Agent Dev OS]
+  OS --> ADOS
+  SK --> ADOS
+  BMAD --> ADOS
+  GS --> ADOS
+  PEE --> ADOS
+  CUR --> ADOS
+```
+
+| Approach | What we integrated | What we skipped |
+|----------|-------------------|-----------------|
+| **[GSD](https://github.com/gsd-build/get-shit-done)** | Discuss→Plan→Execute→Verify loop, fresh session per task, `STATE.md` | Vendor lock-in, 50+ commands |
+| **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** | `changes/<slug>/`, spec deltas, archive trail, brownfield | Required CLI |
+| **[Spec Kit](https://github.com/github/spec-kit)** | `constitution.md`, human gates before execute | Rigid phase locks |
+| **[BMAD](https://github.com/bmad-code-org/BMAD-METHOD)** | PM / Architect / QA role separation in planning | Heavy 12-agent install |
+| **[gstack](https://github.com/garrytan/gstack)** | Office-hours PM, CEO scope modes, investigate iron law, checker review | All 23 skills as mandatory |
+| **[Spec Kitty](https://github.com/spec-kitty/spec-kitty)** | Review-before-merge, worktrees (L4) | Full CLI |
+| **Industry [P–E–E](https://agentengineering.org/articles/supervisor-router-and-planner-executor-patterns/)** | Planner ≠ Executor ≠ Evaluator — always separate sessions | LangGraph runtime |
+| **[Context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)** | Disk memory (`specs/`, `STATE.md`), just-in-time file context | Chat history as state |
+
+**One loop to rule them all:**
+
+| Phase | Primary influence |
+|-------|-------------------|
+| EXPLORE | gstack Think + BMAD discovery |
+| PLAN | gstack Plan + BMAD roles + Spec Kit gates |
+| EXECUTE | GSD fresh executor |
+| VERIFY | P–E–E Evaluator + gstack Review/QA + CI |
+| SHIP / ARCHIVE | OpenSpec deltas + gstack Ship/Retro |
+
+📖 Deep dive: [docs/SYNTHESIS.md](docs/SYNTHESIS.md)
+
+> *Don't pick a religion. Pick the intersection — and ship.*
 
 ---
 
@@ -63,7 +115,7 @@ Inspired by [gstack](https://github.com/garrytan/gstack) — PM, CEO, Architect,
 
 ```bash
 # 1. Use this template or copy into your repo
-git clone https://github.com/YOUR_ORG/agent-dev-os.git my-app
+git clone https://github.com/dihok1/agent-dev-os.git my-app
 cd my-app
 
 # 2. Bootstrap (30 seconds)
@@ -180,7 +232,7 @@ agent-dev-template/
 | CI verification | ◐ | ◐ | ◐ | ◐ | ✅ |
 | Brownfield | ◐ | ❌ | ◐ | ✅ | ✅ |
 
-*Synthesis of what works — not a replacement runtime.*
+**Agent Dev OS doesn't compete with these projects — it distills them.** Use gstack alongside via [optional extension](docs/gstack-mapping.md). Read the full [synthesis doc](docs/SYNTHESIS.md).
 
 ---
 
@@ -229,9 +281,11 @@ PRs welcome! See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 📚 References
 
+- [The Synthesis (full doc)](docs/SYNTHESIS.md) — how every approach maps in
 - [Planner-Executor-Evaluator patterns](https://agentengineering.org/articles/supervisor-router-and-planner-executor-patterns/)
+- [Framework comparison (arxiv)](https://arxiv.org/html/2606.04967v1)
+- [GSD](https://github.com/gsd-build/get-shit-done) · [OpenSpec](https://github.com/Fission-AI/OpenSpec) · [Spec Kit](https://github.com/github/spec-kit) · [BMAD](https://github.com/bmad-code-org/BMAD-METHOD) · [gstack](https://github.com/garrytan/gstack)
 - [Cursor Skills](https://cursor.com/docs/skills) · [Subagents](https://cursor.com/docs/subagents) · [Hooks](https://cursor.com/docs/hooks)
-- [gstack](https://github.com/garrytan/gstack) — role patterns (optional extension)
 
 ---
 
