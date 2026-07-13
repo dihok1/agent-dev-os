@@ -71,4 +71,8 @@ jobs:
           test -f AGENTS.md
           test -f .planning/constitution.md.template
           test -x scripts/bootstrap.sh
+          test -x scripts/next-task.sh
+          test -f scripts/next_task.py
+          pip install pytest
+          pytest tests/test_next_task.py -q
           echo "✓ Agent Dev OS template structure OK"

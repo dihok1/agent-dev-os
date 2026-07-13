@@ -2,301 +2,152 @@
 
 # Agent Dev OS
 
-### The operating system for AI-assisted software development in Cursor
+**Copy-paste template for AI-assisted development in Cursor**
 
-**A synthesis of modern AI-dev methodologies** — GSD, OpenSpec, Spec Kit, BMAD, gstack, and Planner–Executor–Evaluator — **native in Cursor**, no extra CLI.
-
-**Planner → Executor → Evaluator** loop · **Change**-based work units · **Role Roundtable** · **CI as evaluator**
+Planner → Executor → Evaluator · Change-based work · Role planning · CI verification
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Cursor](https://img.shields.io/badge/Cursor-native-000000?logo=cursor&logoColor=white)](https://cursor.com)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-[Quick Start](#-quick-start) · [The Synthesis](#-the-synthesis--all-modern-approaches-unified) · [How It Works](#-how-it-works) · [Commands](#-command-cheatsheet) · [Compare](#-why-not-another-framework) · [Contributing](CONTRIBUTING.md)
+[Русский](README.ru.md) · [How it works](#how-it-works) · [Commands](#commands) · [Docs](docs/SYNTHESIS.md)
 
 </div>
 
 ---
 
-## The problem
+## What is this?
 
-Most AI coding failures happen **between steps** — not because the model is weak:
+A **ready-to-use folder structure** for Cursor: skills, subagents, hooks, and scripts so agents don't mix planning with coding in one chat.
 
-- Plan and code bleed into one chat → context rot
-- No acceptance criteria → "looks done" isn't done
-- Same agent plans, implements, and reviews itself → blind spots
-- Frameworks like BMAD/GSD/OpenSpec are powerful but heavy, coupled, or rigid
+**You get:**
+- Persistent memory on disk (`.planning/`, `specs/`, `changes/`)
+- 12 Cursor skills (`/plan-team`, `/execute`, `/verify`, …)
+- 10 planning roles (PM, Architect, QA, …) that never write code
+- One executor per task, one checker in a fresh chat
 
-**Agent Dev OS** is a **copy-paste template** that gives you production-grade orchestration **natively in Cursor** — Skills, Subagents, Hooks, and GitHub Actions — without installing another CLI.
-
----
-
-## 🧬 The synthesis — all modern approaches, unified
-
-No framework does everything. Production practice in 2025–2026 converged on **combining patterns** — Agent Dev OS packages that combination into one template.
-
-```mermaid
-flowchart LR
-  GSD["GSD\nfresh executor · loop"]
-  OS["OpenSpec\nChanges · deltas"]
-  SK["Spec Kit\nconstitution · gates"]
-  BMAD["BMAD\nrole planning"]
-  GS["gstack\nsprint · iron laws"]
-  PEE["P-E-E\nplan · build · verify"]
-  CUR["Cursor\nskills · hooks"]
-
-  GSD --> ADOS[Agent Dev OS]
-  OS --> ADOS
-  SK --> ADOS
-  BMAD --> ADOS
-  GS --> ADOS
-  PEE --> ADOS
-  CUR --> ADOS
-```
-
-| Approach | What we integrated | What we skipped |
-|----------|-------------------|-----------------|
-| **[GSD](https://github.com/gsd-build/get-shit-done)** | Discuss→Plan→Execute→Verify loop, fresh session per task, `STATE.md` | Vendor lock-in, 50+ commands |
-| **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** | `changes/<slug>/`, spec deltas, archive trail, brownfield | Required CLI |
-| **[Spec Kit](https://github.com/github/spec-kit)** | `constitution.md`, human gates before execute | Rigid phase locks |
-| **[BMAD](https://github.com/bmad-code-org/BMAD-METHOD)** | PM / Architect / QA role separation in planning | Heavy 12-agent install |
-| **[gstack](https://github.com/garrytan/gstack)** | Office-hours PM, CEO scope modes, investigate iron law, checker review | All 23 skills as mandatory |
-| **[Spec Kitty](https://github.com/spec-kitty/spec-kitty)** | Review-before-merge, worktrees (L4) | Full CLI |
-| **Industry [P–E–E](https://agentengineering.org/articles/supervisor-router-and-planner-executor-patterns/)** | Planner ≠ Executor ≠ Evaluator — always separate sessions | LangGraph runtime |
-| **[Context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)** | Disk memory (`specs/`, `STATE.md`), just-in-time file context | Chat history as state |
-
-**One loop to rule them all:**
-
-| Phase | Primary influence |
-|-------|-------------------|
-| EXPLORE | gstack Think + BMAD discovery |
-| PLAN | gstack Plan + BMAD roles + Spec Kit gates |
-| EXECUTE | GSD fresh executor |
-| VERIFY | P–E–E Evaluator + gstack Review/QA + CI |
-| SHIP / ARCHIVE | OpenSpec deltas + gstack Ship/Retro |
-
-📖 Deep dive: [docs/SYNTHESIS.md](docs/SYNTHESIS.md)
-
-> *Don't pick a religion. Pick the intersection — and ship.*
+No extra CLI. Copy into your repo and run bootstrap.
 
 ---
 
-## What you get
-
-| Layer | What | Survives sessions? |
-|-------|------|-------------------|
-| **Memory** | `PROJECT.md`, `STATE.md`, `specs/`, `constitution.md` | ✅ |
-| **Work** | `changes/<slug>/` — proposal, design, tasks, spec deltas | ✅ |
-| **Execution** | 12 skills, 10 role agents, hooks, CI | Runtime |
-
-```mermaid
-flowchart LR
-  subgraph loop [Orchestration Loop]
-    E[EXPLORE] --> P[PLAN]
-    P --> X[EXECUTE]
-    X --> V[VERIFY]
-    V --> S[SHIP]
-    S --> A[ARCHIVE]
-  end
-  Human((Human gates)) -.-> P
-  Human -.-> S
-  CI[GitHub CI] --> V
-```
-
-### Role Roundtable (planning only)
-
-Inspired by [gstack](https://github.com/garrytan/gstack) — PM, CEO, Architect, Designer, Engineer, QA, Security debate **before** anyone writes code. Executor is always solo. Checker is always a **fresh chat**.
-
-> **Roles plan. One agent builds. Another verifies.**
-
----
-
-## ⚡ Quick Start
+## Quick start
 
 ```bash
-# 1. Use this template or copy into your repo
+# 1. Copy template into your project
 git clone https://github.com/dihok1/agent-dev-os.git my-app
 cd my-app
 
-# 2. Bootstrap (30 seconds)
-./scripts/bootstrap.sh --name "My App" --stage build
+# 2. Initialize (creates .planning/ from templates)
+./scripts/bootstrap.sh --name "My App"
 
-# 3. Open in Cursor — start your first Change
+# 3. Open in Cursor, create first work unit
 ./scripts/new-change.sh build user-auth
+```
 
-# 4. In Cursor chat
-/route-intent          # unsure where to start
-/plan-team             # full planning roundtable
-/execute               # one task per fresh Agent session
-/verify                # new chat + checker subagent
+**In Cursor chat:**
+
+```
+/route-intent     # not sure where to start
+/plan-team        # roles debate → proposal, design, tasks
+/execute          # ONE task — then open a NEW chat for the next
+/verify           # NEW chat — checker reviews everything
 /ship → /archive
 ```
 
-**Requirements:** [Cursor](https://cursor.com) with Agent, Plan, Ask, Debug modes · bash · git
+**Requirements:** [Cursor](https://cursor.com) · bash · git
 
 ---
 
-## 🧠 How it works
+## How it works
 
-### One loop, four intents
-
-| Intent | When | Entry |
-|--------|------|-------|
-| `explore` | Research, build vs buy | `/discover-team` |
-| `build` | New capability | `/plan-team` or `/plan` |
-| `fix` | Bug — reproduce first | `/investigate` |
-| `improve` | Refactor, no behavior change | `/plan-team --minimal` |
-
-Depth scales with scope — not seven different playbooks.
-
-### Fresh context rule (from GSD, simplified)
-
-| Phase | Sessions | Writes code? |
-|-------|----------|--------------|
-| EXPLORE / PLAN | Many short role chats | ❌ |
-| EXECUTE | **New chat per task** | ✅ executor only |
-| VERIFY | **New chat** — checker | ❌ |
-
-`STATE.md` + `tasks.md` = memory. Not chat history.
-
-### Product stages
-
-| Stage | Default |
-|-------|---------|
-| `explore` | Research, no strict CI |
-| `build` | Full loop + CI |
-| `operate` | fix/improve + deploy gates |
-
-Set in `.planning/STATE.md` → `product_stage: build`
-
----
-
-## 📁 Structure
+### The loop
 
 ```
-agent-dev-template/
-├── .planning/          # Vision, state, roadmap, constitution
-├── specs/              # Living truth (merged on archive)
-├── changes/            # Active work units
-│   ├── _template/
-│   └── archive/
+EXPLORE → PLAN → EXECUTE → VERIFY → SHIP → ARCHIVE
+```
+
+| You want to… | Start with |
+|--------------|------------|
+| Research, compare options | `/discover-team` |
+| Build a feature | `/plan-team` |
+| Fix a bug | `/investigate` (reproduce first) |
+| Refactor without behavior change | `/plan-team` (minimal) |
+
+### Golden rule: fresh chat per phase
+
+| Phase | Who | Writes code? |
+|-------|-----|--------------|
+| Plan | Role roundtable | No |
+| Execute | One agent, **one task** | Yes |
+| Verify | Checker, **new chat** | No |
+
+Memory lives in files (`STATE.md`, `tasks.md`), not in chat history.
+
+### Folder layout
+
+```
+my-app/
+├── .planning/       # PROJECT, STATE, roadmap, constitution
+├── changes/         # Active work: proposal, design, tasks, roles/
+│   └── _template/   # Copied by new-change.sh
+├── specs/           # Living specs (merged on archive)
 ├── .cursor/
-│   ├── skills/         # /plan-team, /execute, /verify, …
-│   ├── agents/         # pm, architect, checker, …
-│   ├── rules/
-│   └── hooks.json
-├── .github/workflows/  # ci.yml, pr-check.yml
-├── scripts/            # bootstrap, new-change, status
-└── AGENTS.md           # Agent runtime guide
+│   ├── skills/      # /plan-team, /execute, /verify, …
+│   ├── agents/      # pm, architect, checker, …
+│   └── rules/       # Planning & implementation guardrails
+├── scripts/         # bootstrap, new-change, status, archive
+└── AGENTS.md        # Short guide for agents (read this in Cursor)
 ```
 
 ---
 
-## 🎯 Command cheatsheet
+## Commands
 
-### Shell (structure)
+### Shell
 
-```bash
-./scripts/bootstrap.sh --name "App" [--stage explore|build|operate]
-./scripts/new-change.sh <explore|build|fix|improve> <slug>
-./scripts/status.sh
-./scripts/archive-change.sh <slug>
-```
+| Command | What it does |
+|---------|--------------|
+| `./scripts/bootstrap.sh --name "App"` | First-time setup |
+| `./scripts/new-change.sh build my-feature` | Start a Change |
+| `./scripts/status.sh` | Show active change & progress |
+| `./scripts/archive-change.sh my-feature` | Archive after merge |
 
-### Cursor skills (process)
+### Cursor skills
 
-| Skill | Phase |
-|-------|-------|
-| `/route-intent` | Router |
-| `/discover-team` | EXPLORE (roundtable) |
-| `/plan-team` | PLAN (roundtable) |
-| `/plan` | PLAN (solo, small scope) |
-| `/investigate` | FIX (reproduce first) |
-| `/execute` | EXECUTE |
-| `/verify` | VERIFY |
-| `/ship` | SHIP |
-| `/archive` | ARCHIVE |
-| `/reflect` | Retro |
+| Skill | When |
+|-------|------|
+| `/route-intent` | Unsure what to do |
+| `/plan-team` | Full planning with roles |
+| `/execute` | Implement one task |
+| `/verify` | Pre-ship review (new chat) |
+| `/ship` | Prepare PR |
+| `/archive` | Merge specs, close change |
+
+Full list: `.cursor/skills/`
 
 ---
 
-## 📊 Why not another framework?
+## Optional
 
-| | BMAD | Spec Kit | GSD | OpenSpec | **Agent Dev OS** |
-|---|:---:|:---:|:---:|:---:|:---:|
-| Cursor-native | ◐ | ◐ | ◐ | ◐ | ✅ |
-| No extra CLI | ❌ | ◐ | ❌ | ❌ | ✅ |
-| Role planning | ✅ | ◐ | ◐ | ◐ | ✅ |
-| Change deltas | ◐ | ◐ | ◐ | ✅ | ✅ |
-| Fresh executor | ◐ | ◐ | ✅ | ◐ | ✅ |
-| CI verification | ◐ | ◐ | ◐ | ◐ | ✅ |
-| Brownfield | ◐ | ❌ | ◐ | ✅ | ✅ |
-
-**Agent Dev OS doesn't compete with these projects — it distills them.** Use gstack alongside via [optional extension](docs/gstack-mapping.md). Read the full [synthesis doc](docs/SYNTHESIS.md).
+| Topic | Doc |
+|-------|-----|
+| Methodology (GSD, OpenSpec, BMAD, …) | [docs/SYNTHESIS.md](docs/SYNTHESIS.md) |
+| Cloud task automation (webhook chain) | [docs/execute-next.md](docs/execute-next.md) |
+| gstack extension pack | [docs/gstack-mapping.md](docs/gstack-mapping.md) |
 
 ---
 
-## 🪜 Maturity levels
+## Safety
 
-| Level | You add | When |
-|-------|---------|------|
-| **L1** | This template | Day 1 |
-| **L2** | Hooks + subagents + CI | First shipped Change |
-| **L3** | PR agent review, automations | Production |
-| **L4** | Worktrees, parallel Changes | 3+ parallel streams |
+- Hooks block dangerous git commands (force-push, etc.)
+- Checker never runs in the same chat as the executor
+- Constitution + human gates before large scope changes
 
 ---
 
-## 🔌 Optional: gstack extension
+## Contributing
 
-Want Garry Tan's full 23-skill sprint workflow?
-
-```bash
-./scripts/bootstrap.sh --name "App" --with-gstack
-```
-
-See [docs/gstack-mapping.md](docs/gstack-mapping.md) for skill mapping. Core template works standalone.
-
----
-
-## 🛡️ Safety built in
-
-- **careful** — ask before destructive ops
-- **freeze** — stay inside active Change scope  
-- **guard** — no force-push, no self-merge, no fix without reproduction
-
-Hooks block dangerous git commands. Checker runs in isolation.
-
----
-
-## 🤝 Contributing
-
-PRs welcome! See [CONTRIBUTING.md](CONTRIBUTING.md).
-
-1. Fork → test on a real mini-project → PR
-2. Keep it **universal** (no domain-specific business logic)
-3. Keep it **lean** (no new CLI dependencies)
-
----
-
-## 📚 References
-
-- [The Synthesis (full doc)](docs/SYNTHESIS.md) — how every approach maps in
-- [Planner-Executor-Evaluator patterns](https://agentengineering.org/articles/supervisor-router-and-planner-executor-patterns/)
-- [Framework comparison (arxiv)](https://arxiv.org/html/2606.04967v1)
-- [GSD](https://github.com/gsd-build/get-shit-done) · [OpenSpec](https://github.com/Fission-AI/OpenSpec) · [Spec Kit](https://github.com/github/spec-kit) · [BMAD](https://github.com/bmad-code-org/BMAD-METHOD) · [gstack](https://github.com/garrytan/gstack)
-- [Cursor Skills](https://cursor.com/docs/skills) · [Subagents](https://cursor.com/docs/subagents) · [Hooks](https://cursor.com/docs/hooks)
-
----
+See [CONTRIBUTING.md](CONTRIBUTING.md). Keep the template **universal** — no domain-specific app code.
 
 ## License
 
-MIT — use freely, attribution appreciated.
-
-<div align="center">
-
-**⭐ Star this repo if it saves you from context rot**
-
-*Built for teams who ship with Cursor, not despite it.*
-
-</div>
+MIT

@@ -20,11 +20,18 @@ description: EXECUTE phase — implement ONE unchecked task per session in Agent
 3. Run relevant tests
 4. Atomic commit: `feat|fix|refactor(scope): <task summary>`
 5. Mark task `[x]` in `tasks.md`
-6. Stop — suggest new chat for next task or `/verify` when all done
+6. **Stop** — open a **new chat** for the next task, or `/verify` when all tasks are done
 
 ## `/execute all`
 
-Run tasks sequentially; **new chat per task** (tell human to open new chat each time).
+Run tasks sequentially; **new chat per task**.
+
+## Optional: cloud automation
+
+If execute-next webhook chain is configured (see [docs/execute-next.md](../../docs/execute-next.md)):
+
+- After step 5, run `./scripts/finish-execute-task.sh` instead of stopping
+- Never call `trigger-execute-next.sh` before the task PR is merged to `main`
 
 ## Boundaries
 

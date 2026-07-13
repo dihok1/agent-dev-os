@@ -28,12 +28,14 @@ target/
 *.log
 tmp/
 .temp/
+.pytest_cache/
 
 # Planning runtime (generated from templates on bootstrap)
-.planning/STATE.md
 .planning/PROJECT.md
 .planning/ROADMAP.md
-.planning/constitution.md
+# Synced for cloud execute-next — see scripts/sync-execute-next.sh
+!.planning/STATE.md
+!.planning/constitution.md
 
 # Active changes (keep template + archive)
 changes/*

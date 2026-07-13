@@ -75,10 +75,11 @@ echo "  Stage:    $STAGE"
 echo "  Planning: .planning/"
 echo ""
 echo "Next steps:"
-echo "  1. Edit .planning/PROJECT.md and constitution.md"
-echo "  2. ./scripts/new-change.sh explore my-first-change   # or build/fix/improve"
-echo "  3. In Cursor: /route-intent or /discover-team"
-echo ""
+echo "  1. Open this folder in Cursor"
+echo "  2. Edit .planning/PROJECT.md and constitution.md"
+echo "  3. ./scripts/new-change.sh build my-feature"
+echo "  4. In Cursor: /plan-team → /execute → /verify"
+echo "  See README.md and AGENTS.md"
 
 if $WITH_GSTACK; then
   cat <<'EOF'

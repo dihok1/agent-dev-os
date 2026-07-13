@@ -1,0 +1,6 @@
+{
+  "webhookUrl": "",
+  "webhookAuthEnvVar": "CURSOR_AUTOMATION_TOKEN",
+  "gitBranch": "main",
+  "autoHumanGates": true
+}
