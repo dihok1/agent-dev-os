@@ -12,7 +12,8 @@ Runtime guide for Cursor agents. Skill details: `.cursor/skills/`.
 | Goal | Skill |
 |------|-------|
 | Unsure where to start | `/route-intent` |
-| Research | `/discover-team` or `/explore` |
+| Research (findings only) | `/explore` → `research.md` |
+| Product discovery | `/discover-team` |
 | Plan a feature | `/plan-team` or `/plan` |
 | Fix a bug | `/investigate` |
 | Implement one task | `/execute` (new chat per task) |

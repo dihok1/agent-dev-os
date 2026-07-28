@@ -14,7 +14,8 @@ description: Show Agent Dev OS state — active change, phase hint, task progres
 | Condition | Next |
 |-----------|------|
 | No active change | `/route-intent` + `new-change.sh` |
-| explore, draft proposal | `/discover-team` |
+| explore, no `research.md` yet | `/explore` (findings only) |
+| explore, research done / product ambiguity | `/discover-team` or `/plan-team` (separate) |
 | plan artifacts incomplete | `/plan-team` or `/plan` |
 | unchecked tasks | `/execute` (Agent Mode, new chat) |
 | all tasks done | `/verify` (new chat) |

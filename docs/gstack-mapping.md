@@ -47,7 +47,7 @@ Or during bootstrap:
 | devex | yes | `has_devex: false` |
 | security | yes | `security_gate: false` until ship |
 | checker | yes | Written at `/verify` (new chat) |
-| research | yes (optional) | Solo `/explore` only; not plan-team chain |
+| research | `research.md` at change root | Solo `/explore` findings only — no design/tasks; plan is `/plan` or `/plan-team` |
 
 ## Recommendation
 

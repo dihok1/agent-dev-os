@@ -14,19 +14,22 @@ Classify the user's request and recommend the next step.
 
 | Signal | Intent |
 |--------|--------|
-| Unclear what/how, research, build vs buy | `explore` |
-| New capability, feature | `build` |
+| Unclear what/how, research, build vs buy, compare options | `explore` |
+| New capability, feature (ready to design) | `build` |
 | Broken, bug, crash, error | `fix` |
 | Works but refactor, perf, cleanup | `improve` |
 
-3. Recommend roundtable depth:
+3. Recommend roundtable depth / next skill:
 
-| Situation | Depth |
-|-----------|-------|
-| New product, large ambiguity | `full` — discover-team → plan-team |
-| Medium feature | `standard` — plan-team |
-| Clear small scope | `minimal` — /plan |
-| Bug | none — /investigate |
+| Situation | Depth | Next skill |
+|-----------|-------|------------|
+| Quick research / compare (findings only) | none | `/explore` → `research.md` — **no plan** |
+| New product, large product ambiguity | `full` | `/discover-team` then later `/plan-team` |
+| Medium feature, ready to plan | `standard` | `/plan-team` |
+| Clear small scope | `minimal` | `/plan` |
+| Bug | none | `/investigate` |
+
+Do not suggest writing `design.md` / `tasks.md` from `/explore`. Planning is always a separate skill.
 
 4. Output:
 

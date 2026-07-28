@@ -96,7 +96,7 @@ echo "✓ Created changes/$SLUG (intent: $INTENT)"
 echo "  Active change updated in .planning/STATE.md"
 echo ""
 case "$INTENT" in
-  explore) echo "  Suggested: /discover-team or /explore" ;;
+  explore) echo "  Suggested: /explore (writes research.md) or /discover-team (product roundtable)" ;;
   build|improve) echo "  Suggested: /plan-team or /plan" ;;
   fix) echo "  Suggested: /investigate" ;;
 esac
