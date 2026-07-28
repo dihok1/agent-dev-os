@@ -23,6 +23,19 @@
 ```
 ```
 
+## Path coverage (main flow)
+
+| Path | Behavior |
+|------|----------|
+| Happy | |
+| Nil/missing | |
+| Empty | |
+| Upstream error | |
+
+## Rollback
+
+<!-- How to revert if this ships broken -->
+
 ## Test matrix
 
 | Scenario | Type | Priority |

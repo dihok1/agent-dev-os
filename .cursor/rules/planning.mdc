@@ -10,7 +10,11 @@ alwaysApply: false
 - Artifacts: `proposal.md`, `design.md`, `tasks.md`, `specs/` (deltas), `roles/`
 - Spec deltas use ADDED / MODIFIED / REMOVED sections (OpenSpec style)
 - Role agents write to `roles/*.md` — never write application code
-- Human gates: after PM questions, after architect option pick, before execute
+- **PM office-hours artifact** (`roles/pm.md`): demand evidence + status quo + assignment must be substantive before architect/engineer/qa on build intent; problem before implementation
+- **CEO** (`roles/ceo.md`): scope mode + must-haves before architect on full roundtable
+- **Architect** (`roles/architect.md`): selected option + path coverage before engineer
+- **QA** (`roles/qa.md`): EARS traced to PM wedge; checker artifact (`roles/checker.md`) on verify pass
+- Human gates: after PM questions, after PM artifact gate, after architect option pick, before execute
 - Update `.planning/STATE.md` decisions when scope or architecture is locked
 
 ## tasks.md

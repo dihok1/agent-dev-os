@@ -7,16 +7,26 @@ description: VERIFY phase — tests, checker subagent in NEW chat, CI readiness.
 
 **Maker-checker:** run in a **new chat**, not the execute session.
 
+## Preconditions
+
+- All `tasks.md` items marked `[x]` (or human confirms intentional deferral)
+- For **fix** intent: `design.md` contains **Steps to reproduce** and **Root cause (confirmed)** — else **Fail** before checker
+
 ## Steps
 
 1. Run test suite (project-specific — see AGENTS.md)
 2. Run lint if configured
-3. Launch `checker` subagent with:
-   - `git diff` scope
+3. Launch `checker` subagent (**new chat**) with:
+   - `git diff` scope vs base branch
    - `tasks.md` acceptance criteria
-   - `design.md`
-4. Optionally invoke `qa` subagent for acceptance mapping
-5. Report Pass/Fail
+   - `design.md`, `roles/engineer.md` touchpoints
+   - Write **`roles/checker.md`** per `changes/_template/roles/checker.md`
+4. **Checker gate** — Pass only if:
+   - `roles/checker.md` **Verdict: Pass**
+   - Pass 1 checklist categories reviewed (see template)
+   - No open **Critical** items
+5. Optionally invoke `qa` subagent — pick **Verify tier** (Quick/Standard/Exhaustive); map EARS → tests in `roles/qa.md`
+6. Report Pass/Fail to human
 
 ## On pass
 
@@ -25,7 +35,7 @@ description: VERIFY phase — tests, checker subagent in NEW chat, CI readiness.
 
 ## On fail
 
-- List failures → `/execute` for fixes → re-verify
+- List failures → `/execute` for fixes → re-verify (new chat again)
 
 ## CI
 

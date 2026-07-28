@@ -10,9 +10,9 @@ Lightweight research. For deep product discovery use `/discover-team`.
 ## Steps
 
 1. Clarify question in one sentence
-2. Optionally launch `researcher` subagent for isolated context
+2. Optionally launch `researcher` subagent → `roles/research.md`
 3. Read `specs/`, codebase, docs as needed
-4. Write findings to active change `proposal.md` or `design.md`
+4. Write findings to `roles/research.md` (template) and/or `proposal.md`
 5. Recommend next step:
    - GO → `/plan` or `/plan-team`
    - NO-GO → `/archive`

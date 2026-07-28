@@ -17,3 +17,13 @@
 ## Explicitly out (for this change)
 
 - 
+
+## Cherry-picks (Selective Expansion only)
+
+| Addition | Value | Cost | In this change? |
+|----------|-------|------|-----------------|
+| | | | yes / no |
+
+## Deferred to roadmap
+
+-
