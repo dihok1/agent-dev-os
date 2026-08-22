@@ -37,24 +37,27 @@ EXPLORE → PLAN → EXECUTE → VERIFY → SHIP → ARCHIVE
 
 ## Memory (read these, not chat history)
 
+- `.planning/PROJECT.md` — durable users, decisions, outcomes, product principles
 - `.planning/STATE.md` — active change, decisions
 - `.planning/constitution.md` — project rules
+- `changes/<slug>/proposal.md` — Product Contract: why, for whom, and measurable outcome
 - `changes/<slug>/tasks.md` — what to do next
 - `specs/` — living truth (updated on archive)
 
 ## Definition of Done
 
-1. All `tasks.md` items checked
-2. Tests + lint pass
-3. `/verify` + checker pass (new chat)
-4. CI green on PR
-5. Human merges → `/archive`
+1. Product Contract remains satisfied and outcome evidence/check is recorded
+2. All `tasks.md` items checked
+3. Tests + lint pass
+4. `/verify` product-fit + checker pass (new chat)
+5. CI green on PR
+6. Human merges → `/archive`
 
 ## Boundaries
 
 | Tier | Rule |
 |------|------|
-| **Always** | Read STATE + constitution; one task per execute session |
+| **Always** | Read PROJECT + Product Contract + STATE + constitution; one task per execute session |
 | **Ask first** | Schema changes, new dependencies, scope outside active change |
 | **Never** | Force-push main, skip CI, change constitution without human |
 

@@ -30,8 +30,11 @@ git clone https://github.com/dihok1/agent-dev-os.git my-app && cd my-app
 ## Суть
 
 - **Память на диске** — `.planning/`, `changes/`, `specs/` (не в истории чата)
+- **Product Contract** — пользователь, задача, ожидаемое поведение и измеримый результат сохраняются от discovery до execute и verify
 - **Роли планируют, один агент пишет код, другой проверяет**
 - **Один task = один чат** в фазе execute
+
+PM адаптируется к типу работы: Startup, Operator, Decision Support, Platform или Builder. Каждая задача связана с продуктовым результатом либо явно помечена как технический enabler. `/verify` сначала проверяет product fit, затем техническую корректность. Глубина архитектурного разбора зависит от риска: Low, Medium или High.
 
 ## Документация
 

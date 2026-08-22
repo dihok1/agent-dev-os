@@ -8,12 +8,15 @@ alwaysApply: false
 
 - **Change** = one logical unit in `changes/<slug>/`
 - Artifacts: `proposal.md`, `design.md`, `tasks.md`, `specs/` (deltas), `roles/`
+- `proposal.md` is the durable **Product Contract**: user/decision maker, job, current workflow, pain/risk, why now, desired behavior, evidence confidence, baseline/target/window, constraints, and non-goals
+- Every task traces to a Product Contract outcome or names the downstream task it enables
 - Spec deltas use ADDED / MODIFIED / REMOVED sections (OpenSpec style)
 - Role agents write to `roles/*.md` — never write application code
 - **PM office-hours artifact** (`roles/pm.md`): demand evidence + status quo + assignment must be substantive before architect/engineer/qa on build intent; problem before implementation
 - **CEO** (`roles/ceo.md`): scope mode + must-haves before architect on full roundtable
-- **Architect** (`roles/architect.md`): selected option + path coverage before engineer
-- **QA** (`roles/qa.md`): EARS traced to PM wedge; checker artifact (`roles/checker.md`) on verify pass
+- **Architect** (`roles/architect.md`): risk tier + selected option + product trade-offs before engineer
+- **PM alignment**: after architecture, confirm the selected option still satisfies the Product Contract before tasking
+- **QA** (`roles/qa.md`): outcome + behavioral + technical acceptance traced to Product Contract; checker artifact (`roles/checker.md`) on verify pass
 - Human gates: after PM questions, after PM artifact gate, after architect option pick, before execute
 - Update `.planning/STATE.md` decisions when scope or architecture is locked
 
@@ -21,4 +24,5 @@ alwaysApply: false
 
 - One checkbox = one `/execute` session
 - Include EARS acceptance criteria from QA role
+- Include `Product outcome`, `Evidence`, and `Trace` (direct or `enabler for Tn`) for every task
 - Mark `[x]` only when task is fully done and committed

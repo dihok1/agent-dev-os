@@ -2,16 +2,28 @@
 
 <!-- Populated by qa subagent -->
 
-## EARS criteria
+## Outcome criteria
+
+<!-- Verify the user/business result. Do not substitute test coverage for outcome evidence. -->
+
+-
+
+## Behavioral criteria
+
+<!-- What the target user can do, decide, understand, or avoid. -->
+
+-
+
+## Technical criteria (EARS)
 
 <!-- Tag each: (wedge) (edge) (regression) -->
 
 - WHEN … THE SYSTEM SHALL …
 - IF … THEN THE SYSTEM SHALL …
 
-## Trace to PM wedge
+## Trace to Product Contract
 
-<!-- Which criteria prove roles/pm.md narrowest wedge / success criteria -->
+<!-- Map outcome, behavioral, and technical criteria to proposal.md and PM success criteria. -->
 
 ## Edge cases
 

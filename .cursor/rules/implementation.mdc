@@ -17,6 +17,7 @@ alwaysApply: false
 
 On `/execute`, load ONLY:
 - One unchecked task from `tasks.md`
+- Product Contract from `proposal.md`
 - `design.md` for active change
 - `constitution.md`
 - Relevant `@files` — not full plan-team chat history

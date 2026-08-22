@@ -12,10 +12,11 @@ Run after PR is merged.
 1. Merge `changes/<slug>/specs/` deltas into `specs/<domain>/spec.md`
    - Use ADDED / MODIFIED / REMOVED sections
 2. Add entry to `.planning/ROADMAP.md` under Completed
-3. Record key decisions in `.planning/STATE.md` if not already
-4. Run `./scripts/archive-change.sh <slug>` or move to `changes/archive/YYYY-MM-DD-<slug>/`
-5. Set `active_change: none` in STATE.md
-6. Recommend `/reflect` for retro snippet
+3. Record Product Contract outcome status: observed, proxy/manual check pending, or follow-up date + owner; do not claim impact from delivery alone
+4. Record key decisions in `.planning/STATE.md` if not already
+5. Run `./scripts/archive-change.sh <slug>` or move to `changes/archive/YYYY-MM-DD-<slug>/`
+6. Set `active_change: none` in STATE.md
+7. Recommend `/reflect` for retro snippet
 
 ## Spec delta format
 
