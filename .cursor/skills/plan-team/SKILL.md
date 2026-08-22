@@ -10,32 +10,36 @@ Orchestrate planning roundtable. **No role writes application code.**
 ## Read first
 
 - `.planning/STATE.md` — `roundtable_depth`, `has_ui`, `has_devex`, `security_gate`
+- `.planning/PROJECT.md` — durable users, decisions, outcomes, product principles
 - Active change folder, especially `roles/pm.md`
 
 ## PM readiness gate
 
 Before **ceo**, **architect**, **engineer**, or **qa**:
 
-- If `roles/pm.md` has substantive **Demand evidence** and **Status quo** → PM step may be **skipped** or run as **delta** (confirm / update only).
+- If `roles/pm.md` and the `proposal.md` **Product Contract** are substantive → PM step may be **skipped** or run as **delta** (confirm / update only).
 - If missing or placeholder → launch `pm` subagent first; **STOP** until PM gate passes (same criteria as `/discover-team`).
 
 Problem understanding is not re-derived from code alone.
+
+The Product Contract gate requires: specific user/decision maker, job, current workflow, pain/risk, why now, desired behavior, evidence confidence, baseline/target/window (or explicit unavailability), guardrails, and non-goals. Never invent evidence or metrics to pass the gate.
 
 ## Default sequence
 
 | Step | Subagent | Gate before next step |
 |------|----------|------------------------|
-| 1 | `pm` | **Demand evidence**, **Status quo**, **Assignment** filled (see `changes/_template/roles/pm.md`) |
+| 1 | `pm` | PM artifact complete + `proposal.md` Product Contract passes specificity gate |
 | 2 | `ceo` | **Scope mode** + **Must-haves** (3) + ≥1 **Explicitly out** (skip if minimal / `roundtable_depth: minimal`) |
-| 3 | `architect` | **Selected option** in `roles/architect.md` + human pick reflected in `design.md` |
+| 3 | `architect` | Risk tier + **Selected option** + product trade-offs; human pick reflected in `design.md` |
+| 3b | `pm` delta / facilitator | **PM alignment check: pass** after selected architecture; revise if product outcome drifted |
 | 4 | `designer` | **Interaction state table** for primary flows (if `has_ui: true`) |
 | 5 | `devex` | **Friction trace** + persona **TTHW** (if `has_devex: true`) |
-| 6 | `engineer` | **Repo touchpoints** in `roles/engineer.md` + ≥1 unchecked task in `tasks.md` |
-| 7 | `qa` | ≥3 EARS criteria (build) or ≥1 + **Regression** (fix); each tagged `(wedge)`/`(edge)`/`(regression)` |
+| 6 | `engineer` | **Repo touchpoints** + task-to-outcome **Product trace** + ≥1 unchecked task |
+| 7 | `qa` | Outcome + behavioral acceptance and ≥3 EARS criteria (build), or ≥1 + **Regression** (fix) |
 | 8 | `security` | No open **Critical/High** without human **Accept** in `roles/security.md` (if `security_gate: true`) |
 
 9. **Facilitator** — merge into:
-   - `proposal.md` (final; lead with problem/demand from `roles/pm.md`)
+   - `proposal.md` (final Product Contract; concise durable source for every later phase)
    - `design.md` (selected approach)
    - `tasks.md` (executable checklist + acceptance)
    - `specs/` deltas (ADDED/MODIFIED/REMOVED)
@@ -44,7 +48,7 @@ Problem understanding is not re-derived from code alone.
 
 ## Chain (read order for subagents)
 
-`pm` → `ceo` → `architect` reads pm+ceo → `designer`/`devex` read design+pm → `engineer` reads architect+design+optional designer/devex → `qa` reads pm wedge + architect matrix + tasks → `security` reads design+diff scope note.
+`pm` → `ceo` → `architect` reads product contract+pm+ceo → **PM alignment** → `designer`/`devex` read design+pm → `engineer` reads product contract+pm+architect+design+optional designer/devex → `qa` traces all acceptance layers to the contract → `security` reads design+diff scope note.
 
 ## Modes
 

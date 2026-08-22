@@ -2,7 +2,7 @@
 
 <!-- Populated by pm subagent during /discover-team or /plan-team -->
 
-**Mode:** Startup | Builder  
+**Mode:** Startup | Operator | Decision Support | Platform | Builder  
 **Status:** draft | complete  
 **Session date:**
 
@@ -69,4 +69,12 @@
 
 ## Success criteria
 
-<!-- Measurable signals that problem/wedge is validated -->
+<!-- Separate outcome metric, baseline, target, window, and guardrails. If telemetry is unavailable, name an honest proxy/manual check and owner. -->
+
+## Product contract readiness
+
+- [ ] User / decision maker is specific
+- [ ] Job, current workflow, and cost/risk are concrete
+- [ ] Why now and desired behavior change are explicit
+- [ ] Evidence confidence and unknowns are honest
+- [ ] Outcome baseline, target, window, and guardrails are defined or explicitly unavailable

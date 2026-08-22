@@ -3,18 +3,39 @@
 **Intent:** {{INTENT}}
 **Status:** draft
 
-## Problem
+## Product contract
 
-<!-- What pain or opportunity? -->
+**User / decision maker:**
+
+**Job to be done:**
+
+**Current workflow:**
+
+**Pain or decision risk:**
+
+**Why now:**
+
+**Desired behavior change:**
+
+## Evidence and confidence
+
+<!-- Observed behavior, operational data, interviews, incidents, revenue, or other evidence. State confidence and unknowns; do not invent evidence. -->
 
 ## Proposed solution
 
 <!-- What we will build/fix/improve -->
 
-## Success criteria
+## Outcome metrics
 
-- [ ] 
-- [ ] 
+- **Baseline:**
+- **Target:**
+- **Measurement window:**
+- **Guardrails:**
+
+## Acceptance
+
+- [ ] Outcome criterion
+- [ ] Behavioral criterion
 
 ## Out of scope
 

@@ -6,6 +6,13 @@
 **Base branch:**  
 **Verdict:** Pass | Fail
 
+## Product fit
+
+- [ ] Implementation still serves the Product Contract user / decision maker
+- [ ] Desired behavior and outcome check are present
+- [ ] Product trade-offs are explicit and approved
+- [ ] No technically convenient substitution changed the intended outcome
+
 ## Critical (must fix)
 
 -
@@ -16,6 +23,7 @@
 
 ## Completeness
 
+- [ ] Product Contract acceptance and outcome check addressed
 - [ ] All tasks checked in tasks.md
 - [ ] EARS acceptance criteria met
 - [ ] No scope creep vs roles/engineer.md touchpoints

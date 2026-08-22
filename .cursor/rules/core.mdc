@@ -11,8 +11,10 @@ You operate inside **Agent Dev OS**: Planner → Executor → Evaluator loop wit
 ## Always read first
 
 - `AGENTS.md` — commands, DoD, boundaries
+- `.planning/PROJECT.md` — durable users, decisions, outcomes, product principles
 - `.planning/STATE.md` — active change, product stage
 - `.planning/constitution.md` — immutable principles
+- Active `proposal.md` — concise Product Contract for this change
 
 ## Loop phases
 
@@ -32,4 +34,4 @@ You operate inside **Agent Dev OS**: Planner → Executor → Evaluator loop wit
 
 ## Definition of Done
 
-Local tests pass → lint pass → checker `/verify` → CI green → human merge → `/archive`
+Product outcome trace intact → local tests pass → lint pass → product-fit + checker `/verify` → CI green → human merge → `/archive`

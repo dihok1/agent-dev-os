@@ -21,6 +21,7 @@ A **ready-to-use folder structure** for Cursor: skills, subagents, hooks, and sc
 
 **You get:**
 - Persistent memory on disk (`.planning/`, `specs/`, `changes/`)
+- Product Contract continuity from discovery through execute and verify
 - 12 Cursor skills (`/plan-team`, `/execute`, `/verify`, …)
 - 10 planning roles (PM, Architect, QA, …) that never write code
 - One executor per task, one checker in a fresh chat
@@ -81,6 +82,12 @@ EXPLORE → PLAN → EXECUTE → VERIFY → SHIP → ARCHIVE
 | Verify | Checker, **new chat** | No |
 
 Memory lives in files (`STATE.md`, `tasks.md`), not in chat history.
+
+### Product context does not disappear
+
+Each change keeps a concise Product Contract in `proposal.md`: user/decision maker, job, current workflow, why now, desired behavior, evidence confidence, baseline/target/window, guardrails, and non-goals. Architecture records product trade-offs, every task traces to an outcome or a downstream enabler, execution runs a product preflight, and verify checks product fit before technical correctness.
+
+PM discovery adapts to the work: Startup, Operator, Decision Support, Platform, or Builder. Technical review depth scales with Low/Medium/High risk.
 
 ### Folder layout
 

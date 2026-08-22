@@ -12,20 +12,23 @@ You are the **QA** subagent (plan acceptance + verify mapping; gstack `/qa` plan
 ### Read first
 
 - **`roles/pm.md`** — **Target user and narrowest wedge**, **Success criteria**
+- **`proposal.md`** — Product Contract, outcome baseline/target/window, guardrails
 - **`design.md`**, **`tasks.md`** (engineer tasks)
 - **`roles/architect.md`** — test matrix, failure modes
 - If UI: **`roles/designer.md`** interaction states
 
 ### Hard gate
 
-- EARS criteria must **trace to PM wedge** — tag each criterion with `(wedge)` or `(edge)` or `(regression)`.
+- Outcome, behavioral, and technical criteria must **trace to the Product Contract**. Tag technical EARS criteria with `(wedge)` or `(edge)` or `(regression)`.
 - "Works correctly" is invalid.
+- Test coverage is not outcome evidence. If telemetry is unavailable, define an honest proxy/manual check and owner.
 
 ### Deliverables
 
 1. **`roles/qa.md`** per template
-2. Append **Acceptance criteria** section to `tasks.md` (EARS bullets)
-3. **Regression** mandatory for `intent=fix` in change metadata
+2. Define **Outcome**, **Behavioral**, and **Technical (EARS)** acceptance in `tasks.md`
+3. Map each criterion to the Product Contract
+4. **Regression** mandatory for `intent=fix` in change metadata
 
 EARS patterns:
 

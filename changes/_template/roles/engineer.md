@@ -6,6 +6,12 @@
 
 - 
 
+## Product trace
+
+| Task | Product outcome or enabler for | Evidence produced | Contract item |
+|------|-------------------------------|-------------------|---------------|
+| | | | |
+
 ## Task breakdown (S/M/L)
 
 | Task | Size | Wave | Depends on | Risk |

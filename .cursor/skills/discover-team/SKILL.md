@@ -20,6 +20,7 @@ Orchestrate discovery roundtable. **Roles never write code.**
 3. **PM gate (mandatory)** — before CEO or architect, verify `roles/pm.md` contains:
    - **Demand evidence** and **Status quo** (non-empty, specific — not placeholders)
    - **Assignment** (one concrete next action)
+   - `proposal.md` **Product Contract** complete for the chosen context; unavailable evidence/metrics explicitly marked instead of invented
    - If missing: stop roundtable; resume `pm` subagent only
 
 4. **CEO** (if `roundtable_depth: full` in STATE.md) — launch `ceo` subagent
@@ -39,9 +40,10 @@ Orchestrate discovery roundtable. **Roles never write code.**
 
 5b. **Architect gate** — verify **Selected option** filled (or human recorded choice in session → facilitator writes it)
    - Options must reference PM **Target user and narrowest wedge**
+   - Run PM/facilitator alignment check; record `pass` before synthesis
 
 6. **Facilitator** (you) — synthesize:
-   - Update `proposal.md` with problem, demand, status quo, wedge from `roles/pm.md`
+   - Finalize the concise Product Contract in `proposal.md`
    - GO / NO-GO recommendation
    - If GO: suggest `./scripts/new-change.sh build <slug>` + `/plan-team`
    - If NO-GO: suggest `/archive` to record decision

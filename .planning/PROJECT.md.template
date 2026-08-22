@@ -2,7 +2,23 @@
 
 ## Vision
 
-<!-- One paragraph: what problem you solve and for whom -->
+<!-- One paragraph: whose problem this project solves, why it matters, and what durable outcome it creates. -->
+
+## Users and decisions
+
+| User / stakeholder | Job to be done or decision | Current alternative | Cost of failure |
+|--------------------|----------------------------|---------------------|-----------------|
+| | | | |
+
+## Product outcomes
+
+| Outcome | Baseline | Target | Measurement window | Guardrail |
+|---------|----------|--------|--------------------|-----------|
+| | | | | |
+
+## Product principles
+
+- <!-- A decision rule that should survive individual changes. -->
 
 ## Stack
 
