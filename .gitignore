@@ -29,6 +29,8 @@ target/
 tmp/
 .temp/
 .pytest_cache/
+*.sqlite3
+*.sqlite3-*
 
 # Planning runtime (generated from templates on bootstrap)
 .planning/PROJECT.md
@@ -42,3 +44,8 @@ changes/*
 !changes/_template/
 !changes/archive/
 !changes/.gitkeep
+
+# execute-next:active-change BEGIN — updated by scripts/sync-execute-next.sh
+!changes/telegram-task-inbox/
+!changes/telegram-task-inbox/**
+# execute-next:active-change END
