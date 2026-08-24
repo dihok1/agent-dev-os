@@ -552,6 +552,66 @@ class TaskInboxStore:
         )
         self.db.commit()
 
+    def claim_pending(self, limit: int = 20) -> list[dict[str, Any]]:
+        """Return pending/error inbox rows for the task worker (oldest first)."""
+        rows = self.db.execute(
+            """
+            SELECT update_id, source, chat_id, message_id, raw_json, status, last_error
+            FROM updates
+            WHERE status IN ('pending', 'error')
+            ORDER BY update_id ASC
+            LIMIT ?
+            """,
+            (limit,),
+        ).fetchall()
+        claimed: list[dict[str, Any]] = []
+        now = int(time.time())
+        for update_id, source, chat_id, message_id, raw_json, status, last_error in rows:
+            cursor = self.db.execute(
+                """
+                UPDATE updates
+                SET status='processing', updated_at=?, last_error=''
+                WHERE update_id=? AND status IN ('pending', 'error')
+                """,
+                (now, int(update_id)),
+            )
+            if cursor.rowcount:
+                claimed.append(
+                    {
+                        "update_id": int(update_id),
+                        "source": source,
+                        "chat_id": chat_id,
+                        "message_id": message_id,
+                        "raw_json": raw_json,
+                        "prior_status": status,
+                        "last_error": last_error or "",
+                    }
+                )
+        self.db.commit()
+        return claimed
+
+    def mark_processed(self, update_id: int) -> None:
+        self.db.execute(
+            """
+            UPDATE updates
+            SET status='processed', updated_at=?, last_error=''
+            WHERE update_id=?
+            """,
+            (int(time.time()), int(update_id)),
+        )
+        self.db.commit()
+
+    def mark_error(self, update_id: int, error: str) -> None:
+        self.db.execute(
+            """
+            UPDATE updates
+            SET status='error', updated_at=?, last_error=?
+            WHERE update_id=?
+            """,
+            (int(time.time()), error[:500], int(update_id)),
+        )
+        self.db.commit()
+
 
 NEGATIVE_PATTERNS = (
     r"\bне\s*срочн\w*\b",
