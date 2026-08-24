@@ -2,8 +2,8 @@
 """Independent Telegram task worker.
 
 Reads raw updates from the Tasks inbox SQLite database, extracts structured
-tasks from text and supported media, and never sends Telegram messages or
-marks chats as read. Notion sync is out of scope for this module (T3).
+tasks from text and supported media, syncs them to a Notion database, and
+never sends Telegram messages or marks chats as read.
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 from notifier import (
     DATA_DIR,
@@ -36,6 +36,9 @@ from notifier import (
 
 MEDIA_DIR = DATA_DIR / "task_media"
 SUPPORTED_MEDIA_FIELDS = ("voice", "photo", "document")
+NOTION_API_BASE = "https://api.notion.com/v1"
+NOTION_VERSION = "2022-06-28"
+NOTION_RICH_TEXT_LIMIT = 1900
 PROJECT_HINT = re.compile(
     r"(?:проект(?:у|е|а)?|project)\s*[:\-]?\s*"
     r"([A-Za-zА-Яа-яёЁ0-9_./-]{2,40})",
@@ -122,8 +125,168 @@ class TelegramFileClient:
         }
 
 
+def task_source_key(task: ExtractedTask) -> str | None:
+    if task.source is None or task.chat_id is None or task.message_id is None:
+        return None
+    return f"{task.source}:{task.chat_id}:{task.message_id}"
+
+
+def _rich_text(value: str | None) -> list[dict[str, Any]]:
+    text = (value or "")[:NOTION_RICH_TEXT_LIMIT]
+    if not text:
+        return []
+    return [{"type": "text", "text": {"content": text}}]
+
+
+def format_attachments_for_notion(attachments: list[dict[str, Any]]) -> str:
+    lines: list[str] = []
+    for item in attachments:
+        kind = str(item.get("kind") or "file")
+        name = str(item.get("file_name") or item.get("file_id") or kind)
+        local = item.get("local_path")
+        if local:
+            lines.append(f"{kind}: {name} → {local}")
+        else:
+            lines.append(f"{kind}: {name}")
+    return "\n".join(lines)[:NOTION_RICH_TEXT_LIMIT]
+
+
+class NotionSync(Protocol):
+    def upsert_task(self, task: ExtractedTask, page_id: str | None = None) -> str: ...
+
+
+class NotionTaskClient:
+    """Headless Notion API client for create/update of task pages."""
+
+    def __init__(self, token: str, database_id: str) -> None:
+        self._token = token.strip()
+        self._database_id = database_id.strip()
+        if not self._token or not self._database_id:
+            raise ValueError("NOTION_TOKEN and NOTION_DATABASE_ID are required")
+
+    def _request(
+        self,
+        method: str,
+        path: str,
+        payload: dict[str, Any] | None = None,
+        timeout: int = 30,
+    ) -> dict[str, Any]:
+        body = None if payload is None else json.dumps(payload, ensure_ascii=False).encode(
+            "utf-8"
+        )
+        request = urllib.request.Request(
+            NOTION_API_BASE + path,
+            data=body,
+            method=method,
+            headers={
+                "Authorization": f"Bearer {self._token}",
+                "Notion-Version": NOTION_VERSION,
+                "Content-Type": "application/json",
+            },
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                raw = response.read().decode("utf-8")
+        except urllib.error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")[:500]
+            raise RuntimeError(
+                f"Notion API {method} {path} failed: HTTP {exc.code}: {detail}"
+            ) from None
+        except (OSError, TimeoutError) as exc:
+            raise RuntimeError(
+                f"Notion API {method} {path} failed: {type(exc).__name__}"
+            ) from None
+        if not raw:
+            return {}
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(
+                f"Notion API {method} {path} returned invalid JSON"
+            ) from exc
+
+    def properties_for_task(self, task: ExtractedTask) -> dict[str, Any]:
+        source_key = task_source_key(task) or f"update:{task.update_id}"
+        props: dict[str, Any] = {
+            "Name": {"title": _rich_text(task.title) or _rich_text("Без названия")},
+            "Status": {"rich_text": _rich_text(task.status)},
+            "Project": {"rich_text": _rich_text(task.project)},
+            "Priority": {"rich_text": _rich_text(task.priority)},
+            "Deadline": {"rich_text": _rich_text(task.deadline)},
+            "Author": {"rich_text": _rich_text(task.author)},
+            "Source Key": {"rich_text": _rich_text(source_key)},
+            "Body": {"rich_text": _rich_text(task.body)},
+            "Attachments": {
+                "rich_text": _rich_text(format_attachments_for_notion(task.attachments))
+            },
+        }
+        if task.source_link:
+            props["Source"] = {"url": task.source_link}
+        else:
+            props["Source"] = {"url": None}
+        return props
+
+    def find_page_id_by_source_key(self, source_key: str) -> str | None:
+        result = self._request(
+            "POST",
+            f"/databases/{self._database_id}/query",
+            {
+                "page_size": 1,
+                "filter": {
+                    "property": "Source Key",
+                    "rich_text": {"equals": source_key},
+                },
+            },
+        )
+        results = result.get("results") or []
+        if not results:
+            return None
+        page_id = results[0].get("id")
+        return str(page_id) if page_id else None
+
+    def create_page(self, task: ExtractedTask) -> str:
+        result = self._request(
+            "POST",
+            "/pages",
+            {
+                "parent": {"database_id": self._database_id},
+                "properties": self.properties_for_task(task),
+            },
+        )
+        page_id = result.get("id")
+        if not page_id:
+            raise RuntimeError("Notion create page returned no id")
+        return str(page_id)
+
+    def update_page(self, page_id: str, task: ExtractedTask) -> str:
+        self._request(
+            "PATCH",
+            f"/pages/{page_id}",
+            {"properties": self.properties_for_task(task)},
+        )
+        return page_id
+
+    def upsert_task(self, task: ExtractedTask, page_id: str | None = None) -> str:
+        source_key = task_source_key(task)
+        if page_id:
+            try:
+                return self.update_page(page_id, task)
+            except RuntimeError as exc:
+                # Page may have been deleted or archived in Notion — recreate.
+                if "HTTP 404" not in str(exc) and "archived" not in str(exc).lower():
+                    raise
+        if source_key:
+            existing = self.find_page_id_by_source_key(source_key)
+            if existing:
+                return self.update_page(existing, task)
+        return self.create_page(task)
+
+    def archive_page(self, page_id: str) -> None:
+        self._request("PATCH", f"/pages/{page_id}", {"archived": True})
+
+
 class ExtractedTaskStore:
-    """Local structured tasks produced by the worker (Notion sync is T3)."""
+    """Local structured tasks produced by the worker, with Notion page ids."""
 
     def __init__(self, path: Path = TASK_INBOX_DB_PATH) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -147,6 +310,7 @@ class ExtractedTaskStore:
                 source_link TEXT,
                 body TEXT NOT NULL DEFAULT '',
                 attachments_json TEXT NOT NULL DEFAULT '[]',
+                notion_page_id TEXT,
                 created_at INTEGER NOT NULL,
                 updated_at INTEGER NOT NULL
             );
@@ -157,15 +321,23 @@ class ExtractedTaskStore:
                   AND message_id IS NOT NULL;
             """
         )
+        columns = {
+            str(row[1])
+            for row in self.db.execute("PRAGMA table_info(extracted_tasks)").fetchall()
+        }
+        if "notion_page_id" not in columns:
+            self.db.execute(
+                "ALTER TABLE extracted_tasks ADD COLUMN notion_page_id TEXT"
+            )
         self.db.commit()
 
-    def upsert_task(self, task: ExtractedTask) -> None:
+    def upsert_task(self, task: ExtractedTask) -> dict[str, Any]:
         now = int(time.time())
         attachments_json = json.dumps(task.attachments, ensure_ascii=False)
         if task.source is not None and task.chat_id is not None and task.message_id is not None:
             existing = self.db.execute(
                 """
-                SELECT id FROM extracted_tasks
+                SELECT id, notion_page_id FROM extracted_tasks
                 WHERE source=? AND chat_id=? AND message_id=?
                 """,
                 (task.source, task.chat_id, task.message_id),
@@ -195,9 +367,12 @@ class ExtractedTaskStore:
                     ),
                 )
                 self.db.commit()
-                return
+                return {
+                    "id": int(existing[0]),
+                    "notion_page_id": existing[1],
+                }
 
-        self.db.execute(
+        cursor = self.db.execute(
             """
             INSERT INTO extracted_tasks(
                 update_id, source, chat_id, message_id, title, status, project,
@@ -224,6 +399,20 @@ class ExtractedTaskStore:
             ),
         )
         self.db.commit()
+        return {"id": int(cursor.lastrowid), "notion_page_id": None}
+
+    def set_notion_page_id(
+        self, source: str, chat_id: int, message_id: int, page_id: str
+    ) -> None:
+        self.db.execute(
+            """
+            UPDATE extracted_tasks
+            SET notion_page_id=?, updated_at=?
+            WHERE source=? AND chat_id=? AND message_id=?
+            """,
+            (page_id, int(time.time()), source, chat_id, message_id),
+        )
+        self.db.commit()
 
     def get_by_message(
         self, source: str, chat_id: int, message_id: int
@@ -231,7 +420,7 @@ class ExtractedTaskStore:
         row = self.db.execute(
             """
             SELECT update_id, title, status, project, priority, deadline, author,
-                   source_link, body, attachments_json
+                   source_link, body, attachments_json, notion_page_id
             FROM extracted_tasks
             WHERE source=? AND chat_id=? AND message_id=?
             """,
@@ -250,6 +439,7 @@ class ExtractedTaskStore:
             "source_link": row[7],
             "body": row[8],
             "attachments": json.loads(row[9] or "[]"),
+            "notion_page_id": row[10],
         }
 
     def count_tasks(self) -> int:
@@ -333,11 +523,13 @@ class TaskWorker:
         inbox: TaskInboxStore,
         tasks: ExtractedTaskStore,
         files: TelegramFileClient | None = None,
+        notion: NotionSync | None = None,
         media_dir: Path = MEDIA_DIR,
     ) -> None:
         self.inbox = inbox
         self.tasks = tasks
         self.files = files
+        self.notion = notion
         self.media_dir = media_dir
 
     def collect_attachments(self, message: dict[str, Any], update_id: int) -> list[dict[str, Any]]:
@@ -396,13 +588,28 @@ class TaskWorker:
             message_id=message_id,
         )
 
+    def sync_to_notion(self, task: ExtractedTask, page_id: str | None) -> str | None:
+        if self.notion is None:
+            return None
+        new_page_id = self.notion.upsert_task(task, page_id=page_id)
+        if (
+            task.source is not None
+            and task.chat_id is not None
+            and task.message_id is not None
+        ):
+            self.tasks.set_notion_page_id(
+                task.source, task.chat_id, task.message_id, new_page_id
+            )
+        return new_page_id
+
     def process_row(self, row: dict[str, Any]) -> None:
         update_id = int(row["update_id"])
         try:
             update = json.loads(row["raw_json"])
             task = self.extract_task(update)
             if task is not None:
-                self.tasks.upsert_task(task)
+                stored = self.tasks.upsert_task(task)
+                self.sync_to_notion(task, stored.get("notion_page_id"))
             self.inbox.mark_processed(update_id)
         except Exception as exc:
             self.inbox.mark_error(update_id, str(exc))
@@ -431,10 +638,21 @@ class TaskWorker:
             time.sleep(poll_interval)
 
 
+def notion_client_from_env() -> NotionTaskClient:
+    token = os.getenv("NOTION_TOKEN", "").strip()
+    database_id = os.getenv("NOTION_DATABASE_ID", "").strip()
+    if not token or not database_id:
+        raise SystemExit(
+            "NOTION_TOKEN and NOTION_DATABASE_ID are required in .env for Notion sync"
+        )
+    return NotionTaskClient(token, database_id)
+
+
 def build_worker_from_env(
     inbox_path: Path = TASK_INBOX_DB_PATH,
     media_dir: Path = MEDIA_DIR,
     with_files: bool = True,
+    with_notion: bool = True,
 ) -> TaskWorker:
     load_env(Path(__file__).resolve().parent / ".env")
     inbox = TaskInboxStore(inbox_path)
@@ -445,7 +663,10 @@ def build_worker_from_env(
         if not token:
             raise SystemExit("TELEGRAM_BOT_TOKEN is missing in .env")
         files = TelegramFileClient(token)
-    return TaskWorker(inbox, tasks, files=files, media_dir=media_dir)
+    notion = notion_client_from_env() if with_notion else None
+    return TaskWorker(
+        inbox, tasks, files=files, notion=notion, media_dir=media_dir
+    )
 
 
 def main() -> None:

@@ -13,6 +13,7 @@ security_gate: false
 
 <!-- Format: YYYY-MM-DD: decision (rationale) -->
 2026-08-24: Keep Telegram polling in ASAP and copy raw updates into a separate Tasks SQLite database read by an independent worker (simplest one-token design with minimal ASAP risk).
+2026-08-24: Notion sync uses headless API (NOTION_TOKEN + NOTION_DATABASE_ID) with upsert by Source Key; worker retries on Notion failures without touching ASAP.
 
 ## Blockers
 
